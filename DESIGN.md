@@ -1,6 +1,6 @@
 Design Rationale
 
-Parameter Flow
+Parameter Flow 
 When a user runs:
 uv run wvu-ieng-331-final-21 --seller-state SP --start-date 2026-01-01
 pipeline.main() calls _parse_args(), which uses argparse.ArgumentParser to parse --seller-state into args.seller_state = "SP" and --start-date into args.start_date = "2026-01-01".

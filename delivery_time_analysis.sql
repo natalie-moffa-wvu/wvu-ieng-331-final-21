@@ -52,3 +52,4 @@ FROM geo_orders
 GROUP BY customer_state
 HAVING COUNT(*) >= 10
 ORDER BY avg_days_early DESC
+
