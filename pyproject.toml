@@ -14,7 +14,7 @@ dependencies = [
 [project.scripts]
 wvu-ieng-331-final-21 = "wvu_ieng_331_final_21.pipeline:main"
 
-[build-system]
+[build-system}
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
