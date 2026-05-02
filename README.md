@@ -43,7 +43,7 @@ Final Deliverable
 Format chosen: Excel workbook (output/report.xlsx)
 Excel was chosen because it requires no installation beyond what a typical business analyst already has, supports embedded charts, and is trivially shareable via email or OneDrive. It is generated automatically every time the pipeline runs — no manual steps required.
 Sheet contents:
-Sheet	What it shows
+Sheet What it shows
 Executive Summary	Cover page with filter parameters and sheet guide
 Seller Scorecard	Full ranked seller table + bar chart of top 10 composite scores
 ABC Classification	Tier summary (colour-coded A/B/C) + full product detail table + bar chart 
