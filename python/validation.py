@@ -72,7 +72,9 @@ def validate(db_path: Path) -> bool:
     if passed:
         logger.info("All validation checks passed.")
     else:
-        logger.warning("Some validation checks failed — pipeline will continue with available data.")
+        logger.warning(
+            "Some validation checks failed — pipeline will continue with available data."
+        )
 
     return passed
 
@@ -113,14 +115,17 @@ def _check_key_columns(conn: duckdb.DuckDBPyConnection) -> bool:
     for table, columns in KEY_COLUMNS.items():
         for col in columns:
             try:
-                count = conn.execute(
+                row = conn.execute(
                     f"SELECT COUNT({col}) FROM {table}"  # noqa: S608
-                ).fetchone()[0]
+                ).fetchone()
+                count = row[0] if row is not None else 0
                 if count == 0:
                     logger.warning(f"Column {table}.{col} is entirely NULL.")
                     all_ok = False
                 else:
-                    logger.info(f"Key column check passed — {table}.{col} has {count:,} non-NULL rows.")
+                    logger.info(
+                        f"Key column check passed — {table}.{col} has {count:,} non-NULL rows."
+                    )
             except duckdb.Error as exc:
                 logger.warning(f"Could not check {table}.{col}: {exc}")
                 all_ok = False
@@ -142,9 +147,12 @@ def _check_row_counts(conn: duckdb.DuckDBPyConnection) -> bool:
     all_ok = True
     for table, minimum in MIN_ROW_COUNTS.items():
         try:
-            count = conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]  # noqa: S608
+            row = conn.execute(f"SELECT COUNT(*) FROM {table}").fetchone()  # noqa: S608
+            count = row[0] if row is not None else 0
             if count < minimum:
-                logger.warning(f"{table} has {count:,} rows — below minimum of {minimum:,}.")
+                logger.warning(
+                    f"{table} has {count:,} rows — below minimum of {minimum:,}."
+                )
                 all_ok = False
             else:
                 logger.info(f"Row count check passed — {table}: {count:,} rows.")
@@ -167,16 +175,21 @@ def _check_date_range(conn: duckdb.DuckDBPyConnection) -> bool:
         row = conn.execute(
             "SELECT MIN(order_purchase_timestamp), MAX(order_purchase_timestamp) FROM orders"
         ).fetchone()
-        min_date, max_date = row
-        if min_date is None or max_date is None:
-            logger.warning("orders.order_purchase_timestamp contains no non-NULL values.")
+        if row is None:
+            logger.warning(
+                "orders.order_purchase_timestamp contains no non-NULL values."
+            )
             return False
+        min_date, max_date = row
         logger.info(f"Date range check passed — orders span {min_date} to {max_date}.")
 
         from datetime import datetime, timezone
+
         now = datetime.now(timezone.utc).replace(tzinfo=None)
         if min_date > now:
-            logger.warning(f"orders.order_purchase_timestamp minimum ({min_date}) is in the future.")
+            logger.warning(
+                f"orders.order_purchase_timestamp minimum ({min_date}) is in the future."
+            )
             return False
         return True
     except duckdb.Error as exc:
