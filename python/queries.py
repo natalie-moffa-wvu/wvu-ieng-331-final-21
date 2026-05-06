@@ -6,10 +6,6 @@ returning Polars DataFrames. No inline SQL; all queries live in .sql files.
 
 from __future__ import annotations
 
-from pathlib import Path
-
-import duckdb
-import polars as pl
 
 _SQL_DIR = Path(__file__).parent.parent.parent / "sql"
 
@@ -32,22 +28,7 @@ def _load_sql(filename: str) -> str:
     return path.read_text(encoding="utf-8")
 
 
-def _connect(db_path: Path) -> duckdb.DuckDBPyConnection:
-    """Open a read-only DuckDB connection.
 
-    Args:
-        db_path: Path to the .duckdb file.
-
-    Returns:
-        An open DuckDB connection.
-
-    Raises:
-        FileNotFoundError: If the database file does not exist.
-        duckdb.Error: If the connection fails.
-    """
-    if not db_path.exists():
-        raise FileNotFoundError(f"Database not found: {db_path}")
-    return duckdb.connect(str(db_path), read_only=True)
 
 
 def get_seller_scorecard(
